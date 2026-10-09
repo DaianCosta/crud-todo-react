@@ -30,13 +30,15 @@ export function useTasks(): UseTasksReturn {
   const [tasks, setTasks] = useState<Task[]>(() => loadTasks());
 
   const addTask = useCallback((data: CreateTaskInput) => {
+    const now = new Date().toISOString();
     const newTask: Task = {
       id: uuidv4(),
       title: data.title,
       description: data.description,
       status: 'pending',
       reminder: data.reminder,
-      createdAt: new Date().toISOString(),
+      createdAt: now,
+      updatedAt: now,
     };
     setTasks((prev) => {
       const updated = [newTask, ...prev];
@@ -51,12 +53,19 @@ export function useTasks(): UseTasksReturn {
         if (t.id !== id) return t;
         const next = { ...t };
         if (data.title !== undefined) next.title = data.title;
-        if (data.description !== undefined) next.description = data.description;
+        if (data.description !== undefined) {
+          if (data.description === '') {
+            delete next.description;
+          } else {
+            next.description = data.description;
+          }
+        }
         if (data.reminder === null) {
           delete next.reminder;
         } else if (data.reminder !== undefined) {
           next.reminder = data.reminder;
         }
+        next.updatedAt = new Date().toISOString();
         return next;
       });
       saveTasks(updated);

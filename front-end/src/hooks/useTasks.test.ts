@@ -10,12 +10,14 @@ describe('useTasks', () => {
   // AC-1: app renders without errors — tested in App.test.tsx
   // AC-8: tasks persist in localStorage
   it('AC-8: loads tasks from localStorage on init', () => {
+    const now = new Date().toISOString();
     const stored = [
       {
         id: '1',
         title: 'Stored task',
         status: 'pending',
-        createdAt: new Date().toISOString(),
+        createdAt: now,
+        updatedAt: now,
       },
     ];
     localStorage.setItem('tasks', JSON.stringify(stored));
@@ -99,6 +101,46 @@ describe('useTasks', () => {
     expect(t.title).toBe('New');
     expect(t.description).toBe('New desc');
     expect(t.reminder).toBe('2031-06-15');
+  });
+
+  it('AC-6: addTask assigns updatedAt equal to createdAt', () => {
+    // CR-1: updatedAt must be set on creation
+    const { result } = renderHook(() => useTasks());
+    act(() => {
+      result.current.addTask({ title: 'Task with timestamps' });
+    });
+    const t = result.current.tasks[0];
+    expect(t.updatedAt).toBeDefined();
+    expect(t.updatedAt).toBe(t.createdAt);
+  });
+
+  it('AC-6: updateTask sets updatedAt on edit', () => {
+    // CR-1: updatedAt must be updated when editing
+    const { result } = renderHook(() => useTasks());
+    act(() => {
+      result.current.addTask({ title: 'Task' });
+    });
+    const createdAt = result.current.tasks[0].updatedAt;
+    const id = result.current.tasks[0].id;
+    act(() => {
+      result.current.updateTask(id, { title: 'Updated' });
+    });
+    expect(result.current.tasks[0].updatedAt).toBeDefined();
+    // updatedAt must be a valid ISO string after createdAt or equal
+    expect(result.current.tasks[0].updatedAt >= createdAt).toBe(true);
+  });
+
+  it('AC-6: updateTask clears description when empty string is passed', () => {
+    // CR-2: clearing description in edit mode must work
+    const { result } = renderHook(() => useTasks());
+    act(() => {
+      result.current.addTask({ title: 'Task', description: 'Some desc' });
+    });
+    const id = result.current.tasks[0].id;
+    act(() => {
+      result.current.updateTask(id, { description: '' });
+    });
+    expect(result.current.tasks[0].description).toBeUndefined();
   });
 
   it('AC-6: updateTask removes reminder when null', () => {

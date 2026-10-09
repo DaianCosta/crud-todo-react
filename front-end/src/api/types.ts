@@ -7,6 +7,7 @@ export interface Task {
   status: TaskStatus;
   reminder?: string; // "YYYY-MM-DD"
   createdAt: string; // ISO string
+  updatedAt: string; // ISO string
 }
 
 export interface CreateTaskInput {

@@ -33,6 +33,7 @@ describe('TaskCard — AC-9: visual highlight for today reminder', () => {
       status: 'pending',
       reminder: getTodayISO(),
       createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
     };
     renderCard(task);
     // The chip displays the date in pt-BR format; verify by role or icon
@@ -52,6 +53,7 @@ describe('TaskCard — AC-9: visual highlight for today reminder', () => {
       status: 'pending',
       reminder: '2099-12-31',
       createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
     };
     renderCard(task);
     const dateStr = new Date('2099-12-31T12:00:00').toLocaleDateString('pt-BR');
@@ -67,6 +69,7 @@ describe('TaskCard — AC-9: visual highlight for today reminder', () => {
       title: 'No Reminder',
       status: 'pending',
       createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
     };
     renderCard(task);
     expect(screen.getByText('No Reminder')).toBeInTheDocument();
@@ -81,6 +84,7 @@ describe('TaskCard — AC-9: visual highlight for today reminder', () => {
       title: 'Done Task',
       status: 'completed',
       createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
     };
     renderCard(task);
     expect(screen.getByText('Concluída')).toBeInTheDocument();
@@ -93,6 +97,7 @@ describe('TaskCard — AC-9: visual highlight for today reminder', () => {
       title: 'Pending Task',
       status: 'pending',
       createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
     };
     renderCard(task);
     expect(screen.getByText('Pendente')).toBeInTheDocument();

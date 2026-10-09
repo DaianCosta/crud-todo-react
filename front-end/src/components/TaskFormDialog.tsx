@@ -52,7 +52,7 @@ export function TaskFormDialog({ open, editTask, onSave, onClose }: TaskFormDial
     if (editTask) {
       const update: UpdateTaskInput = {
         title: title.trim(),
-        description: description.trim() || undefined,
+        description: description.trim(), // explicit empty string to allow clearing
         reminder: reminder ? reminderStr : null,
       };
       onSave(update, editTask.id);
